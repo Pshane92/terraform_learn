@@ -1,0 +1,296 @@
+Git is version control system
+1. Record your changes
+2. collaborative. development
+3. who madec change & when
+4. revert any changes
+
+++++++++++++++++++++++++++++++++++++++++++
+
+Types:
+1. Local
+2. Centralised
+3. Distributed
+
+++++++++++++++++++++++++++++++++++++++++++
+
+
+git config --global user.name
+git config --global user.email //show the cuurent config
+
+
+git config --global user.name Pshane92
+git config --global user.email p.santhanakumar@outlook.com
+
+
+
+git config --list //show the full lsit of current config.
+
+
+++++++++++++++++++++++++++++++++++++++++++++
+
+All commands atart with git
+Git work with repo.
+Most of the git commands inside the git repo.
+
++++++++++++++++++++++++++++++++++++++++++++
+
+git init . // . nothing but current directory
+
+
+++++++++++++++++++++++++++++++++++++++
+Git states  :
+
+Working Directory
+|
+Git Add
+|
+Staging Area
+|
+git commit
+|
+repository
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+git add file1 file2.txt // add specfic file
+
+git add . // all files in the current directory to staging Area
+
+git add --all // add all files in current directory same like .
+
+
+git log // shows what are the commits you did
+
+git status // current state of git
+
+git commit -m "this is my first commit" // to commit & push to local repo.
+
+git commit -m "adding file 3 & 4"
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+16 Jan 2023
+
+git diff // show the diff in Working Directory and Staging directory
+
+git diff --staged // show diff in staging directory and local repository
+
+git diff --staged HEAD // same command as above to compare with local repository HEAD>>Local repository
+
+git diff HEAD //compare local working directory to local repository
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+git diff 7b28cb77f 87f9fd47c8 // compare two commit we have done earlier. we can get commit ID from git log command
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+README.md // md mwans mark down language
+
+git clone https://github.com/Pshane92/Git_learn.git // use HTTPS method to clone the repo. from GitHub to local PC
+
+git push origin main // push local commit to the github repo.
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Error: 
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Solution: 
+
+type "ssh-keygen"
+then the key will be stored in Your public key has been saved in /root/.ssh/id_rsa.pub.
+use "cat /root/.ssh/id_rsa.pub"
+Copy the entire key & go to GitHub add that public key, then it start works
+
+
+https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent
+
+ssh-keygen
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+18 jan 2023
+
+git pull //Pull the changes from remote repo done by someone else
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//push an existing repository from the command line to remote
+git remote add origin git@github.com:Pshane92/Master_Git.git
+git push -u origin main
+
+Error:
+error: src refspec main does not match any
+error: failed to push some refs to 'github.com:Pshane92/Master_Git.git'
+
+Soultion :
+git push -u origin HEAD:main
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+19 jan 2023
+
+git diff HEAD HEAD~1 // Compare latest & N-1 commit
+
+git diff HEAD HEAD~2 // Compare latest & N-2 commit
+
+git diff HEAD-3 HEAD~4 // Compare N-3 & N-4 commit
+
+
+git show HEAD //See the changes in only on Head commit
+
+git show 764faf137e47f243774224b11234ac0ba6f18216 // See the changes on the commit based on its SHA Code
+
+git show HEAD~2  //See the changes in only on Head-2 commit
+
+git annotate contact.html // To see for the single file, who all did the commit there & when & what's their commit id for that
+
+git checkout 764faf137e47f243774224b11234ac0ba6f18216 // Create the detached HEAD // You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this state without impacting any branches by switching back to a branch.
+
+git rm contact.html //remove or delete a file from Git, then you have to commit & push
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Git branches
+
+git branch // gives list of current braches in repo.
+>> * master
+
+git branch UAT // Create a new branch called UAT
+
+git branch
+>>  UAT
+* master
+
+git checkout UAT //switching to one branch to another & HEAD will switched to new branch 
+>>Switched to branch 'UAT'
+
+$ git log
+>>commit 6c9507dbd0dad45ff0425e3ed6ad3a3a13ef6fb6 (HEAD -> UAT, origin/main, master)
+
+https://git-scm.com/book/en/v2/Git-Branching-Branches-in-a-Nutshell
+
+
+git switch - // switch back to master branch
+>>Switched to branch 'master'
+Your branch is up to date with 'origin/main'.
+
+
+git merge UAT // merge UAT to branch to Main brach, but you have to be in Source branch where you merging
+
+git checkout -b dev // Create branch & chekout in the same command
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//Forking > Happens between two diff. accounts
+//We can update this code it wont affect the orginal sorce repository
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+20 Jan
+
+// Privare repository
+// collaborative
+
+//tags
+
+git tag v1.0 // tagging Head as v1.0
+
+git tag -a v1.1 89e795a74def9be79 -m "adding tag"// tagging based on commit id
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+21 Jan
+
+//Revert changes on git
+//Revert changes from working directory
+git restore <file_name> 
+          or
+git checkout -- <file_name>
+Note: even you can remove changes manually. But if we have updated multiple files and don’t know which lines to remove this command really helps
+
+//Revert changes from Staging Area
+git restore --staged <file_name>  #to revert changes from Staging area to working directory  
+git restore <file_name> #to revert changes from working directory  
+
+//Revert changes from Local Repository
+git reset HEAD~         # to revert changes from local repo to working directory
+git restore <file_name(s)> # to revert changes from working directory  
+
+//Revert changes from Remote Repository
+We dont have direct way to do this.
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//gitignore
+
+vi .gitignore // create git ignore file & add exclusion files names 
+
+//rebase
+
+git rebase -i HEAD~4 //squash all commit to single commit
+
+git pull = git fetch + Git Merge // Pull the remote repo & directly update to Working Directory
+
+git fetch // pull the changes to Local repo. , we can't see the changes in the local working directory
+
+git merge // Merge the local repo. to working directory
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//git setup in reaL world
+
+1. Create Provate Repository
+2. Create 3 branches Prod, UAT, Development
+3. Add teams as collaborators
+4. Enable SSH authentication for all developers
+5. Protect UAT & DEV Branches
+6. 1 approval for checjk-in-code in UAT, 2 approval for Prod
+7. Buid & deploy should be successful before check-in0code on to UAT/Prod
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
