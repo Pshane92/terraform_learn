@@ -1,5 +1,0 @@
-terraform show -target
-terraform apply -var ""
-terraform destroy -target
-terraform apply -var-file xxxx.tfvars
-
