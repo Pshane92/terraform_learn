@@ -1,0 +1,51 @@
+Dockers & Kubernetes complete Guide
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+docker run -it redis //sample commanad to install docker
+
+why docker: easy to install without worrying about setup or dependencies
+
+docker // a platform or ecosystem around creating and running containers
+
+docker client, Dcoker server, Docker machine, Docker images, Docker Hub, Docker Compose
+
+docker image // Single file with all deps and config to run a program
+
+Containers // instance of an image. Runs a program //has own space. own N/w, Own hardware resources
+
+Docket for windows = Docker Client (Docker CLI)+ docker server (Docker Daemon)
+
+Docker CLI // Tools we are issue commands to
+
+Docker Server // Tools that responsible for creating images, running containers etc.,
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+20 Mar
+
+docker run hello-world //Example Basic commands
+
+containers // is really a process or group pf processes that have a grouping of resorces specifically
+
+Image = Filesystem snapshot (Chrome,python) + Startup Command (> Run Chrome) // Example
+
+docker run busybox echi Hi there // echo hi there is override command which replaces the default
+                                //command inside the image
+
+docker run busybox ls //its list folders inside the image 
+
+You can't use "docker run hello-world ls" //coz its a signle line program not having any folders
+
+docker ps // list of running containers
+
+docker run busybox ping google.com //Example
+
+
+
+
+
+
+
+
