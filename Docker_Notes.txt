@@ -1164,3 +1164,24 @@ FROM nginx
 COPY --from=0 /app/build /usr/share/nginx/html //nginx autmaticall start no command require
 
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CI/CD With AWS //Topic
+
+Laptop>Git>Travis>AWS
+
+Git has installed
+
+Git hub has configured
+
+Repo Created
+
+Code pushed to github
+
+Travis CI web has loggd in with github
+
+.travis.yml // has created inside the fronten project file
+
+
+
+
