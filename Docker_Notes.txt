@@ -40,12 +40,1127 @@ You can't use "docker run hello-world ls" //coz its a signle line program not ha
 
 docker ps // list of running containers
 
+o/p: CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+
 docker run busybox ping google.com //Example
 
 
+docker ps
+o/p:
+CONTAINER ID   IMAGE     COMMAND             CREATED          STATUS          PORTS     NAMES
+01b2d99716b4   busybox   "ping google.com"   14 seconds ago   Up 11 seconds             jovial_carver
+
+
+docker stop 01b2d99716b4 // to stop the containers
+
+docker ps --all //list all containers previously CREATED
+
+
+docker run = docker create + docker start //master command
+
+docker create : docker create <imagename>
+
+docker start : docker start <container ID>
+
+docker create hello-world // create container from image
+
+docker start -a 58c41b7216ab64ef9a4241c7b4e23271e66fab267793e918e8384c10db45b42a //start by container id
+
+// -a switch here take the output & print it
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+we can start the stopped container again by below command but its start with default comman when
+container was created  
+
+docker start -a 7f6feedb0558
+hi
+
+docker start -a 7f6feedb0558 echo bye
+you cannot start and attach multiple containers at once
+
+
+docker system prune // delete all containers 
+WARNING! This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all dangling images
+  - all dangling build cache
+
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+58c41b7216ab64ef9a4241c7b4e23271e66fab267793e918e8384c10db45b42a
+01b2d99716b418b7287fab78d39d946db38905fad8cf5530a0f907fbe77dba03
+7f6feedb055831554340a19a58c1fb6c4c0adc897345f169cc518d5e1414023e
+3c92cc0632d59cb09fbd8e96127ffc1579886c9c17dfc8510b8f6657b8124d52
+
+Total reclaimed space: 0B
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Docker log
+
+docker create busybox echo hi love
+f5f5b047c0d0dcbd95c09bb9028ea7a1a3e200edda965772c26adca145b8ddca
+
+docker start f5f5b047c0d0dcbd95c09bb9028ea7a1a3e200edda965772c26adca145b8ddca
+f5f5b047c0d0dcbd95c09bb9028ea7a1a3e200edda965772c26adca145b8ddca
+
+docker logs f5f5b047c0d0dcbd95c09bb9028ea7a1a3e200edda965772c26adca145b8ddca //get what happen when container created & stopped
+hi love
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// stop & kill docker
+
+docker create busybox ping google.com
+3a79b6539fdd8ca7af95c895b688ce42e3214e34e78532343ab25f2edf55c8b3
+
+docker start 3a79b6539fdd8ca7af95c895b688ce42e3214e34e78532343ab25f2edf55c8b3
+3a79b6539fdd8ca7af95c895b688ce42e3214e34e78532343ab25f2edf55c8b3
+
+docker ps
+CONTAINER ID   IMAGE     COMMAND             CREATED          STATUS          PORTS     NAMES
+3a79b6539fdd   busybox   "ping google.com"   44 seconds ago   Up 14 seconds             nifty_kowalevski
+
+docker stop 3a79b6539fdd // take 10 for grace kill, if not works send kill comman automatically :SIGTERM
+3a79b6539fdd
+
+docker start 3a79b6539fdd
+3a79b6539fdd
+
+docker kill 3a79b6539fdd //instant kill, SIGKILL
+3a79b6539fdd 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Mutlti command containers
+
+docker run redis // install redis
+
+docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS      NAMES
+6ece846f9822   redis     "docker-entrypoint.s…"   4 minutes ago   Up 4 minutes   6379/tcp   silly_montalcini
+
+docker exec -it 6ece846f9822 redis-cli // -exec (additional command) -it (text input)
+127.0.0.1:6379> set myname kumar
+OK
+127.0.0.1:6379> get myname
+"kumar"
+127.0.0.1:6379> exit
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// entering into container shell/command processors
+
+docker exec -it 6ece846f9822 sh //entering shell
+# ls
+# cd /
+# ls
+bin  boot  data  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+#
+# ^C
+#
+
+C:\Users\Admin>^D
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+docker run -it busybox sh // run container & directly shell..not allow other process run
+/ #
+/ # echo hi
+hi
+/ #
+/ # ^C
+
+/ #
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+docker run -it busybox sh
+/ #
+/ # ls
+bin    dev    etc    home   lib    lib64  proc   root   sys    tmp    usr    var
+/ # touch test
+/ # ls
+bin    dev    etc    home   lib    lib64  proc   root   sys    test   tmp    usr    var
+/ # exit
+
+C:\Users\Admin>
+
+other terminal:::
+
+>docker run -it busybox sh
+/ #
+/ # ls
+bin    dev    etc    home   lib    lib64  proc   root   sys    tmp    usr    var
+/ #
+/ # exit
+
+C:\Users\Admin>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// creating docker file
+
+docker file > docker client > docker server > usable image
+
+flow: specify base image > run some additional comman to run programs > specify a run comman on Startup
+
+Docker build . //from where the Dockerfile kept
+
+o/p:
+/ #
+/ # ls
+[+] Building 29.0s (6/6) FINISHED
+ => [internal] load build definition from Dockerfile                                                               2.4s
+ => => transferring dockerfile: 230B                                                                               0.3s
+ => [internal] load .dockerignore                                                                                  2.2s
+ => => transferring context: 2B                                                                                    0.2s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                   7.1s
+ => [1/2] FROM docker.io/library/alpine@sha256:ff6bdca1701f3a8a67e328815ff2346b0e4067d32ec36b7992c1fdc001dc8517    5.7s
+ => => resolve docker.io/library/alpine@sha256:ff6bdca1701f3a8a67e328815ff2346b0e4067d32ec36b7992c1fdc001dc8517    0.6s
+ => => sha256:ff6bdca1701f3a8a67e328815ff2346b0e4067d32ec36b7992c1fdc001dc8517 1.64kB / 1.64kB                     0.0s
+ => => sha256:e2e16842c9b54d985bf1ef9242a313f36b856181f188de21313820e177002501 528B / 528B                         0.0s
+ => => sha256:b2aa39c304c27b96c1fef0c06bee651ac9241d49c4fe34381cab8453f9a89c7d 1.47kB / 1.47kB                     0.0s
+ => => sha256:63b65145d645c1250c391b2d16ebe53b3747c295ca8ba2fcb6b0cf064a4dc21c 3.37MB / 3.37MB                     1.1s
+ => => extracting sha256:63b65145d645c1250c391b2d16ebe53b3747c295ca8ba2fcb6b0cf064a4dc21c                          0.7s
+ => [2/2] RUN apk add --update redis                                                                              10.5s
+ => exporting to image                                                                                             1.2s
+ => => exporting layers                                                                                            1.2s
+ => => writing image sha256:f307a7d9c3f6ebf81cb97544e8e1a002e2583ad799dc52ea7a95211f723ffda6
+
+ dC:\Master\terraform_learn>docker run f307a7d9c3f6ebf81cb97544e8e1a002e2583ad799dc52ea7a95211f723ffda6
+1:C 20 Mar 2023 16:56:22.055 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+1:C 20 Mar 2023 16:56:22.055 # Redis version=7.0.9, bits=64, commit=00000000, modified=0, pid=1, just started
+1:C 20 Mar 2023 16:56:22.055 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+1:M 20 Mar 2023 16:56:22.058 * monotonic clock: POSIX clock_gettime
+1:M 20 Mar 2023 16:56:22.060 * Running mode=standalone, port=6379.
+1:M 20 Mar 2023 16:56:22.061 # Server initialized
+1:M 20 Mar 2023 16:56:22.061 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+1:M 20 Mar 2023 16:56:22.079 * Ready to accept connections
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//Dockerfile : FROM RUN CMD
+
+FROM alpine
+
+# Step 2: Download and install dependency
+
+RUN apk add --update redis
+RUN apk add --update gcc
+
+# Step 3: Tell the image what to do when it starts as container
+
+CMD ["redis-server"]
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//Tagging an image
+
+C:\Master\terraform_learn>docker build -t shane/redis_project:latest .
+[+] Building 4.3s (7/7) FINISHED
+ => [internal] load build definition from Dockerfile                                                               0.4s
+ => => transferring dockerfile: 32B                                                                                0.0s
+ => [internal] load .dockerignore                                                                                  0.6s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                   2.8s
+ => [1/3] FROM docker.io/library/alpine@sha256:ff6bdca1701f3a8a67e328815ff2346b0e4067d32ec36b7992c1fdc001dc8517    0.0s
+ => CACHED [2/3] RUN apk add --update redis                                                                        0.0s
+ => CACHED [3/3] RUN apk add --update gcc                                                                          0.0s
+ => exporting to image                                                                                             0.3s
+ => => exporting layers                                                                                            0.0s
+ => => writing image sha256:c2bacdbf6758698dbdb8d9edbe55d5807ff4cc09f8dee2ee4b64acc321d99455                       0.1s
+ => => naming to docker.io/shane/redis_project:latest                                                              0.1s
+
+C:\Master\terraform_learn>
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Manual Image Generation with Docker Commit
+
+Terminal 1:
+
+C:\Master\terraform_learn>docker run -it alpine sh //command
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+63b65145d645: Already exists
+Digest: sha256:ff6bdca1701f3a8a67e328815ff2346b0e4067d32ec36b7992c1fdc001dc8517
+Status: Downloaded newer image for alpine:latest
+/ # apk add --update redis //command
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.17/main/x86_64/APKINDEX.tar.gz
+fetch https://dl-cdn.alpinelinux.org/alpine/v3.17/community/x86_64/APKINDEX.tar.gz
+(1/1) Installing redis (7.0.10-r0)
+Executing redis-7.0.10-r0.pre-install
+Executing redis-7.0.10-r0.post-install
+Executing busybox-1.35.0-r29.trigger
+OK: 10 MiB in 16 packages
+/ #
+
+
+Terminal 2:
+docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED         STATUS         PORTS     NAMES
+115c11623ad7   alpine    "sh"      2 minutes ago   Up 2 minutes             great_driscoll
+
+C:\Users\Admin>docker commit -c 'CMD ["redis-server"]' 115c11623ad7
+Error response from daemon: No such container: [redis-server]'
+
+docker run <id> // id from commit
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// build node.js web app
+
+C:\Master\terraform_learn\simpleweb>docker build .
+[+] Building 6.9s (5/5) FINISHED
+ => [internal] load build definition from Dockerfile                                                               2.5s
+ => => transferring dockerfile: 169B                                                                               0.5s
+ => [internal] load .dockerignore                                                                                  1.5s
+ => => transferring context: 2B                                                                                    0.2s
+ => [internal] load metadata for docker.io/library/alpine:latest                                                   0.0s
+ => CACHED [1/2] FROM docker.io/library/alpine                                                                     0.0s
+ => ERROR [2/2] RUN npm install                                                                                    4.6s
+------
+ > [2/2] RUN npm install:
+#4 2.736 /bin/sh: npm: not found
+------
+executor failed running [/bin/sh -c npm install]: exit code: 127
+
+C:\Master\terraform_learn\simpleweb>
+
+error due to :
+FROM alpine
+
+# Install some depenendencies
+RUN npm install
+
+# Default command
+CMD ["npm", "start"]
+
+
+fix:
+
+FROM node:alpine //you can select any version from docker hub wedsite, alpine is light weight
+
+# Install some depenendencies
+RUN npm install
+
+# Default command
+CMD ["npm", "start"]
+
+error 2:
+
+
+C:\Master\terraform_learn\simpleweb>docker build .
+[+] Building 48.1s (5/5) FINISHED
+ => [internal] load build definition from Dockerfile                                                               1.2s
+ => => transferring dockerfile: 174B                                                                               0.5s
+ => [internal] load .dockerignore                                                                                  1.1s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     6.3s
+ => [1/2] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971  27.4s
+ => => resolve docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.5s
+ => => sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971fa41 1.43kB / 1.43kB                     0.0s
+ => => sha256:f487fdae88463b8adba1cc82af1bc93058a4bc2f44c7c5c968958c6460d4c5c3 1.16kB / 1.16kB                     0.0s
+ => => sha256:cddebfd139342425ebc719224414486c06f0159d262f9cf3004453df9f3ed4b9 6.48kB / 6.48kB                     0.0s
+ => => sha256:eb563838426b1ec0a8b95b825a372c46dfe0c89749eaca0e47cd75d09fc7ff51 447B / 447B                         1.2s
+ => => sha256:bc59db64d63d87a2863457b909c9a6ca8772a8f04b85959ce55bd955b0ebfcfb 48.23MB / 48.23MB                  13.2s
+ => => sha256:c8fd6d18c4a07741813297d22a4b571d0a72a7bebe60a80935aa471e737ae1d1 2.35MB / 2.35MB                     3.8s
+ => => extracting sha256:bc59db64d63d87a2863457b909c9a6ca8772a8f04b85959ce55bd955b0ebfcfb                          7.3s
+ => => extracting sha256:c8fd6d18c4a07741813297d22a4b571d0a72a7bebe60a80935aa471e737ae1d1                          0.2s
+ => => extracting sha256:eb563838426b1ec0a8b95b825a372c46dfe0c89749eaca0e47cd75d09fc7ff51                          0.0s
+ => ERROR [2/2] RUN npm install                                                                                   11.6s
+------
+ > [2/2] RUN npm install:
+#4 5.722 npm ERR! Tracker "idealTree" already exists
+#4 5.731
+#4 5.731 npm ERR! A complete log of this run can be found in:
+#4 5.733 npm ERR!     /root/.npm/_logs/2023-03-21T15_31_28_048Z-debug-0.log
+------
+executor failed running [/bin/sh -c npm install]: exit code: 1
+
+C:\Master\terraform_learn\simpleweb>
+
+Error because json file not able find by NPM, because the file or not inside the container
+so we have to copy the required file inside the container
+
+
+solution : COPY ./ ./ // current working directory to container
+
+# Specify a base image
+FROM node:alpine
+WORKDIR /usr/app //added this fix for some issue
+
+# Install some depenendencies
+COPY ./ ./
+RUN npm install
+
+# Default command
+CMD ["npm", "start"]
+
+O/P:
+
+C:\Master\terraform_learn\simpleweb>docker build .
+[+] Building 21.7s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                               1.0s
+ => => transferring dockerfile: 204B                                                                               0.1s
+ => [internal] load .dockerignore                                                                                  0.6s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     1.6s
+ => CACHED [1/4] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00  0.0s
+ => [internal] load build context                                                                                  0.6s
+ => => transferring context: 263B                                                                                  0.0s
+ => [2/4] WORKDIR /usr/app                                                                                         1.5s
+ => [3/4] COPY ./ ./                                                                                               1.5s
+ => [4/4] RUN npm install                                                                                         11.9s
+ => exporting to image                                                                                             3.3s
+ => => exporting layers                                                                                            2.9s
+ => => writing image sha256:f063b9aaff2ecf3eba3fb9350dfeef7643159aa72cbe9f3c4154ba2cd557e135                       0.1s
+
+C:\Master\terraform_learn\simpleweb>
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// Tagging
+
+C:\Master\terraform_learn\simpleweb>docker build -t shane/simpleweb .
+[+] Building 7.7s (9/9) FINISHED
+ => [internal] load build definition from Dockerfile                                                               0.6s
+ => => transferring dockerfile: 32B                                                                                0.0s
+ => [internal] load .dockerignore                                                                                  0.8s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     3.8s
+ => [internal] load build context                                                                                  1.2s
+ => => transferring context: 91B                                                                                   0.0s
+ => [1/4] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => CACHED [2/4] WORKDIR /usr/app                                                                                  0.0s
+ => CACHED [3/4] COPY ./ ./                                                                                        0.0s
+ => CACHED [4/4] RUN npm install                                                                                   0.0s
+ => exporting to image                                                                                             1.1s
+ => => exporting layers                                                                                            0.0s
+ => => writing image sha256:f063b9aaff2ecf3eba3fb9350dfeef7643159aa72cbe9f3c4154ba2cd557e135                       0.1s
+ => => naming to docker.io/shane/simpleweb                                                                         0.1s
+
+C:\Master\terraform_learn\simpleweb>
+
+//running
+
+C:\Master\terraform_learn\simpleweb>docker run shane/simpleweb
+
+> start
+> node index.js
+
+Listening on port 8080
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//container port forwarding
+
+C:\Master\terraform_learn\simpleweb>docker run -p 8080:8080 shane/simpleweb  //8080:8080 localhost:container
+
+> start
+> node index.js
+
+Listening on port 8080
+
+go to chrome : localhost:8080
+
+Hi there
+
+C:\Master\terraform_learn\simpleweb>docker run -p 5000:8080 shane/simpleweb
+
+> start
+> node index.js
+
+Listening on port 8080
+
+go to chrome : localhost:5000
+
+Hi there
+
+C:\Master\terraform_learn\simpleweb>docker run -p 5000:6785 shane/simpleweb //if you change container port
+you have to modify the index.js like below
+
+app.listen(6785, () => {
+  console.log('Listening on port 8080');
+});
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// avoid rebuild
+
+if you change below code  
+
+app.get('/', (req, res) => {
+  res.send('bye there');        //hi there
+  });
+
+the browser will show still hi there because you haven't copie the latest file insie the container
+you have to rebuild to take effect
+
+# Specify a base image
+FROM node:alpine
+
+WORKDIR /usr/app
+
+# Install some depenendencies
+COPY ./package.json ./     //only copy json in the first
+RUN npm install
+COPY ./ ./  //copy everything now by this way we can elimate npm install time
+
+# Default command
+CMD ["npm", "start"]
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// docker project for website visit counts
+
+
+C:\Master\terraform_learn\visits-starter>docker build .
+[+] Building 31.8s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile                                                               1.4s
+ => => transferring dockerfile: 136B                                                                               0.9s
+ => [internal] load .dockerignore                                                                                  0.7s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     4.2s
+ => [internal] load build context                                                                                  0.8s
+ => => transferring context: 735B                                                                                  0.2s
+ => CACHED [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00  0.0s
+ => [2/5] WORKDIR /app                                                                                             1.7s
+ => [3/5] COPY package.json .                                                                                      1.7s
+ => [4/5] RUN npm install                                                                                         17.7s
+ => [5/5] COPY . .                                                                                                 1.5s
+ => exporting to image                                                                                             2.5s
+ => => exporting layers                                                                                            2.1s
+ => => writing image sha256:26fdae825b97d140a8312d759076d050a3dfe723ad9f96db1a084b574373533f
+
+
+ C:\Master\terraform_learn\visits-starter>docker build -t shane/visits:latest .
+[+] Building 4.2s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile                                                               0.7s
+ => => transferring dockerfile: 31B                                                                                0.1s
+ => [internal] load .dockerignore                                                                                  0.8s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     1.8s
+ => [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => [internal] load build context                                                                                  0.4s
+ => => transferring context: 90B                                                                                   0.0s
+ => CACHED [2/5] WORKDIR /app                                                                                      0.0s
+ => CACHED [3/5] COPY package.json .                                                                               0.0s
+ => CACHED [4/5] RUN npm install                                                                                   0.0s
+ => CACHED [5/5] COPY . .                                                                                          0.0s
+ => exporting to image                                                                                             0.6s
+ => => exporting layers                                                                                            0.0s
+ => => writing image sha256:26fdae825b97d140a8312d759076d050a3dfe723ad9f96db1a084b574373533f                       0.1s
+ => => naming to docker.io/shane/visits:latest                                                                     0.1s
+
+C:\Master\terraform_learn\visits-starter>
+
+Docker compose // same as CLI but issue mut command smoothly
+
+YAML Preparation
+
+version: '3'
+services:
+  redis-server:
+    image: 'redis'
+  node-app:
+    build: .   // . here mentions dockerfile 
+    ports:
+      - '4001:8081'  // - here array of all ports "local:container"
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+C:\Master\terraform_learn\visits-starter>docker-compose up --build
+[+] Building 13.7s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile                                                               1.1s
+ => => transferring dockerfile: 31B                                                                                0.2s
+ => [internal] load .dockerignore                                                                                  1.4s
+ => => transferring context: 2B                                                                                    0.1s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     6.9s
+ => [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => [internal] load build context                                                                                  0.5s
+ => => transferring context: 637B                                                                                  0.0s
+ => CACHED [2/5] WORKDIR /app                                                                                      0.0s
+ => CACHED [3/5] COPY package.json .                                                                               0.0s
+ => CACHED [4/5] RUN npm install                                                                                   0.0s
+ => [5/5] COPY . .                                                                                                 2.3s
+ => exporting to image                                                                                             1.6s
+ => => exporting layers                                                                                            1.0s
+ => => writing image sha256:be6ee0a6158c82ff2d2e8afb90ac1eab497475b16a1b9f8d6e1f46f5e152150b                       0.1s
+ => => naming to docker.io/library/visits-starter-node-app                                                         0.1s
+[+] Running 3/3
+ - Network visits-starter_default           Created                                                                0.8s
+ - Container visits-starter-redis-server-1  Created                                                                4.3s
+ - Container visits-starter-node-app-1      Created                                                                4.4s
+Attaching to visits-starter-node-app-1, visits-starter-redis-server-1
+visits-starter-redis-server-1  | 1:C 22 Mar 2023 05:01:08.955 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+visits-starter-redis-server-1  | 1:C 22 Mar 2023 05:01:08.956 # Redis version=7.0.9, bits=64, commit=00000000, modified=0, pid=1, just started
+visits-starter-redis-server-1  | 1:C 22 Mar 2023 05:01:08.956 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+visits-starter-redis-server-1  | 1:M 22 Mar 2023 05:01:08.956 * monotonic clock: POSIX clock_gettime
+visits-starter-redis-server-1  | 1:M 22 Mar 2023 05:01:08.958 * Running mode=standalone, port=6379.
+visits-starter-redis-server-1  | 1:M 22 Mar 2023 05:01:08.958 # Server initialized
+visits-starter-redis-server-1  | 1:M 22 Mar 2023 05:01:08.959 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+visits-starter-redis-server-1  | 1:M 22 Mar 2023 05:01:08.959 * Ready to accept connections
+visits-starter-node-app-1      |
+visits-starter-node-app-1      | > start
+visits-starter-node-app-1      | > node index.js
+visits-starter-node-app-1      |
+visits-starter-node-app-1      | listening on port 8081
+
+go to chrome: localhost:4001
+Number of visits 7
+
+C:\Master\terraform_learn\visits-starter>docker-compose up -d  //run the container in background
+[+] Running 2/2
+ - Container visits-starter-redis-server-1  Started                                                                4.6s
+ - Container visits-starter-node-app-1      Started                                                                4.9s
+
+C:\Master\terraform_learn\visits-starter>
+
+
+C:\Master\terraform_learn\visits-starter>docker ps
+CONTAINER ID   IMAGE                     COMMAND                  CREATED        STATUS          PORTS                    NAMES
+f26ee011ffc6   visits-starter-node-app   "docker-entrypoint.s…"   11 hours ago   Up 55 seconds   0.0.0.0:4001->8081/tcp   visits-starter-node-app-1
+c439f7dd008a   redis                     "docker-entrypoint.s…"   11 hours ago   Up 55 seconds   6379/tcp                 visits-starter-redis-server-1
+
+C:\Master\terraform_learn\visits-starter>
+
+
+C:\Master\terraform_learn\visits-starter>docker-compose down //stop the container
+[+] Running 3/3
+ - Container visits-starter-node-app-1      Removed                                                                3.9s
+ - Container visits-starter-redis-server-1  Removed                                                                3.3s
+ - Network visits-starter_default           Removed                                                                1.1s
+
+C:\Master\terraform_learn\visits-starter>
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// container restart policies
+
+exit : 0 > we exited an everythin OK
+exit : 1, 2, 3 etc > we exited because something went wrong 
+
+restart policy
+
+'no' > never attempt to restart this if crash/stop
+always > if container stops for any reason always try to starts
+on-failure > only restart if container stops with an error code
+unless-stopped > always restart unless developer forcibly stops
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+C:\Master\terraform_learn\visits-starter>docker-compose ps   //need docker compose yml file & show only info related to yml
+NAME                            IMAGE                     COMMAND                  SERVICE             CREATED             STATUS              PORTS
+visits-starter-node-app-1       visits-starter-node-app   "docker-entrypoint.s…"   node-app            38 minutes ago      Up 38 minutes       0.0.0.0:4001->8081/tcp
+visits-starter-redis-server-1   redis                     "docker-entrypoint.s…"   redis-server        38 minutes ago      Up 38 minutes       6379/tcp
+
+C:\Master\terraform_learn\visits-starter>
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//another project : react 
+
+install node js from internet
+
+C:\Master\terraform_learn>npm install -g create-react-app   // install react app
+npm WARN deprecated tar@2.2.2: This version of tar is no longer supported, and will not receive security updates. Please upgrade asap.
+
+added 67 packages in 17s
+
+5 packages are looking for funding
+  run `npm fund` for details
+npm notice
+npm notice New minor version of npm available! 9.5.0 -> 9.6.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v9.6.2
+npm notice Run npm install -g npm@9.6.2 to update!
+npm notice
+
+C:\Master\terraform_learn>
+
+
+C:\Master\terraform_learn>create-react-app frontend //create fronten project
+
+Creating a new React app in C:\Master\terraform_learn\frontend.
+
+Installing packages. This might take a couple of minutes.
+Installing react, react-dom, and react-scripts with cra-template...
+
+
+added 1419 packages in 5m
+
+231 packages are looking for funding
+  run `npm fund` for details
+
+Installing template dependencies using npm...
+
+added 62 packages, and changed 1 package in 18s
+
+231 packages are looking for funding
+  run `npm fund` for details
+Removing template package using npm...
+
+
+removed 1 package, and audited 1481 packages in 7s
+
+231 packages are looking for funding
+  run `npm fund` for details
+
+6 high severity vulnerabilities
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+Success! Created frontend at C:\Master\terraform_learn\frontend
+Inside that directory, you can run several commands:
+
+  npm start
+    Starts the development server.
+
+  npm run build
+    Bundles the app into static files for production.
+
+  npm test
+    Starts the test runner.
+
+  npm run eject
+    Removes this tool and copies build dependencies, configuration files
+    and scripts into the app directory. If you do this, you can’t go back!
+
+We suggest that you begin by typing:
+
+  cd frontend
+  npm start
+
+Happy hacking!
+
+C:\Master\terraform_learn>
+
+
+C:\Master\terraform_learn>cd frontend
+
+C:\Master\terraform_learn\frontend>npm run test //npm test
+
+> frontend@0.1.0 test
+> react-scripts test
+ PASS  src/App.test.js (10.254 s)
+  √ renders learn react link (73 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        18.653 s
+Ran all test suites related to changed files.
+
+Watch Usage
+ › Press a to run all tests.
+ › Press f to run only failed tests.
+ › Press q to quit watch mode.
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press Enter to trigger a test run.
 
 
 
+C:\Master\terraform_learn\frontend>
 
+C:\Master\terraform_learn\frontend>npm run build  //npm build
+
+> frontend@0.1.0 build
+> react-scripts build
+
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  46.61 kB  build\static\js\main.68afa4bf.js
+  1.78 kB   build\static\js\787.cda612ba.chunk.js
+  541 B     build\static\css\main.073c9b0a.css
+
+The project was built assuming it is hosted at /.
+You can control this with the homepage field in your package.json.
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+  npm install -g serve
+  serve -s build
+
+Find out more about deployment here:
+
+  https://cra.link/deployment
+
+
+C:\Master\terraform_learn\frontend>'
+
+
+C:\Master\terraform_learn\frontend>npm run start   //npm start
+
+> frontend@0.1.0 start
+> react-scripts start
+
+(node:13808) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:13808) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://192.168.1.9:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+
+its opens chrome & localhost:3000 an shows react page 
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+dev : npm run start
+prod : npm run build 
+Dockerfile.dev : development file
+
+C:\Master\terraform_learn\frontend>docker build -f Dockerfile.dev . //build docker from specfic file
+[+] Building 1222.4s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile.dev                                                           1.3s
+ => => transferring dockerfile: 35B                                                                                0.2s
+ => [internal] load .dockerignore                                                                                  1.4s
+ => => transferring context: 2B                                                                                    0.0s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     4.1s
+ => [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => [internal] load build context                                                                                502.6s
+ => => transferring context: 288.17MB                                                                            501.1s
+ => CACHED [2/5] WORKDIR /app                                                                                      0.1s
+ => [3/5] COPY package.json .                                                                                      3.1s
+ => [4/5] RUN npm install                                                                                        429.9s
+ => [5/5] COPY . .                                                                                                87.7s
+ => exporting to image                                                                                           189.7s
+ => => exporting layers                                                                                          189.1s
+ => => writing image sha256:34a9733aac190dd60c3161dcb9a8b56d08c19895249a50ae499e2c9c5f49a939
+
+C:\Master\terraform_learn\frontend>
+
+
+C:\Master\terraform_learn\frontend>docker run -p 3000:3000 34a9733aac190dd60c3  //port map require ue to sperate created
+
+> frontend@0.1.0 start
+> react-scripts start
+
+(node:30) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:30) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://172.17.0.2:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+Compiling...
+Compiled successfully!
+webpack compiled successfully
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+docker run -it -p 3000:3000 -v /app/node_modules -v ${PWD}:/app 1e7a0a4f22ffb4a1b32852e // linux command
+winpty docker run -it -p 3000:3000 -v /app/node_modules -v ${PWD}:/app 1e7a0a4f22ffb4a1b32852e //git bash
+in winows {pwd} has not workes
+
+-v > volumes
+-v ${PWD}:/app > mapping present working directory (PWD) to container app directory
+-v /app/node_modules > use noe node_modules within app 
+
+
+
+$ winpty docker run -it -p 3000:3000 -v /app/node_modules -v ${PWD}:/app 1e7a0a4f22ffb4a1b32852e
+Compiled successfully!
+
+You can now view frontend in the browser.
+
+  Local:            http://localhost:3000
+  On Your Network:  http://172.17.0.2:3000
+
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+
+webpack compiled successfully
+
+go to chrome: localhost:3000
+
+love shane // from src\app.js 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+To avoid long command "docker run -it -p 3000:3000 -v /app/node_modules -v ${PWD}:/app 1e7a0a4f22ffb4a1b32852"
+we can build docker compose file like below
+
+version: '3'
+services:
+  web:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3000:3000'
+    volumes:
+      - /app/node_modules
+      - .:/app
+
+
+C:\Master\terraform_learn\frontend>docker-compose up
+[+] Building 11.6s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile.dev                                                           2.1s
+ => => transferring dockerfile: 149B                                                                               0.5s
+ => [internal] load .dockerignore                                                                                  1.8s
+ => => transferring context: 2B                                                                                    0.1s
+ => [internal] load metadata for docker.io/library/node:alpine                                                     4.6s
+ => [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => [internal] load build context                                                                                  1.3s
+ => => transferring context: 1.27MB                                                                                0.5s
+ => CACHED [2/5] WORKDIR /app                                                                                      0.0s
+ => CACHED [3/5] COPY package.json .                                                                               0.0s
+ => CACHED [4/5] RUN npm install                                                                                   0.0s
+ => [5/5] COPY . .                                                                                                 1.5s
+ => exporting to image                                                                                             1.3s
+ => => exporting layers                                                                                            0.8s
+ => => writing image sha256:805e0b6f1414762cd03e40dbc4f4fe99aed09841553f76ab838756c315916f73                       0.1s
+ => => naming to docker.io/library/frontend-web                                                                    0.1s
+[+] Running 2/2
+ - Network frontend_default  Created                                                                               0.9s
+ - Container frontend-web-1  Created                                                                              57.4s
+Attaching to frontend-web-1
+frontend-web-1  |
+frontend-web-1  | > frontend@0.1.0 start
+frontend-web-1  | > react-scripts start
+frontend-web-1  |
+frontend-web-1  | (node:25) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+frontend-web-1  | (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend-web-1  | (node:25) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+frontend-web-1  | Starting the development server...
+frontend-web-1  |
+frontend-web-1  | Compiled successfully!
+frontend-web-1  |
+frontend-web-1  | You can now view frontend in the browser.
+frontend-web-1  |
+frontend-web-1  |   Local:            http://localhost:3000
+frontend-web-1  |   On Your Network:  http://172.18.0.2:3000
+frontend-web-1  |
+frontend-web-1  | Note that the development build is not optimized.
+frontend-web-1  | To create a production build, use npm run build.
+frontend-web-1  |
+frontend-web-1  | webpack compiled successfully
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//npm run test
+
+C:\Master\terraform_learn\frontend>docker build -f Dockerfile.dev .
+[+] Building 59.6s (10/10) FINISHED
+ => [internal] load build definition from Dockerfile.dev                                                           3.5s
+ => => transferring dockerfile: 35B                                                                                0.9s
+ => [internal] load .dockerignore                                                                                  2.7s
+ => => transferring context: 2B                                                                                    0.7s
+ => [internal] load metadata for docker.io/library/node:alpine                                                    20.2s
+ => [1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963fe11cc00adc971f  0.0s
+ => [internal] load build context                                                                                 24.3s
+ => => transferring context: 2.50kB                                                                               22.4s
+ => CACHED [2/5] WORKDIR /app                                                                                      0.0s
+ => CACHED [3/5] COPY package.json .                                                                               0.0s
+ => CACHED [4/5] RUN npm install                                                                                   0.0s
+ => [5/5] COPY . .                                                                                                 5.8s
+ => exporting to image                                                                                             4.0s
+ => => exporting layers                                                                                            2.5s
+ => => writing image sha256:3fa2b6cc5018caac9c48a91a08af2c31d6292c0addaf90d4da64326d51bbbffe
+
+
+C:\Master\terraform_learn\frontend>docker run -it 3fa2b6cc5018caac9c48a91 npm run test //run test while entering
+
+To avoid above method we can change the docker file below
+version: '3'
+services:
+  web:
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '3000:3000'
+    volumes:
+      - /app/node_modules
+      - .:/app
+  tests:                                     //add test insie
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ['npm', 'run', 'test']
+
+
+C:\Master\terraform_learn\frontend>docker-compose up --build //command
+[+] Building 15.0s (13/16)
+ => [frontend-web internal] load build definition from Dockerfile.dev                                              2.5s
+ => => transferring dockerfile: 149B                                                                               0.0s
+ => [frontend-tests internal] load build definition from Dockerfile.dev                                            1.7s
+ => => transferring dockerfile: 35B                                                                                0.4s
+ => [frontend-web internal] load .dockerignore                                                                     1.4s
+ => => transferring context: 2B                                                                                    0.0s
+ => [frontend-tests internal] load .dockerignore                                                                   2.4s
+ => => transferring context: 2B                                                                                    0.0s
+ => [frontend-tests internal] load metadata for docker.io/library/node:alpine                                      5.0s
+ => [frontend-tests 1/5] FROM docker.io/library/node:alpine@sha256:a67a33f791d1c86ced985f339fa160f6188f590ebbe963  0.0s
+ => [frontend-tests internal] load build context                                                                   1.0s
+ => => transferring context: 2.68kB                                                                                0.3s
+ => [frontend-web internal] load build context                                                                     2.1s
+ => => transferring context: 1.27MB                                                                                0.6s
+ => CACHED [frontend-tests 2/5] WORKDIR /app                                                                       0.0s
+ => CACHED [frontend-tests 3/5] COPY package.json .                                                                0.0s
+ => CACHED [frontend-tests 4/5] RUN npm install                                                                    0.0s
+ => [frontend-tests 5/5] COPY . .                                                                                  2.2s
+ => [frontend-web] exporting to image                                                                              2.7s
+ => => exporting layers                                                                                            1.2s
+ => => writing image sha256:8e2ad843e5f135927e687f61724b8ee589cc4ff9f3bb361ad79d610748ec8d97                       0.1s
+ => => naming to docker.io/library/frontend-tests                                                                  0.1s
+ => => writing image sha256:66a7ec78824b4c277722bfd4ada3780f446c12d172c76b4455bd63baaf94a22c                       0.1s
+ => => naming to docker.io/library/frontend-web                                                                    0.1s
+[+] Running 2/2
+ - Container frontend-tests-1  Created                                                                            80.7s
+ - Container frontend-web-1    Recreated                                                                          12.0s
+Attaching to frontend-tests-1, frontend-web-1
+frontend-web-1    |
+frontend-web-1    | > frontend@0.1.0 start
+frontend-web-1    | > react-scripts start
+frontend-tests-1  |
+frontend-web-1    |
+frontend-tests-1  | > frontend@0.1.0 test
+frontend-tests-1  | > react-scripts test
+frontend-tests-1  |
+frontend-tests-1  | FAIL src/App.test.js (5.284 s)
+frontend-tests-1  |   ✕ renders learn react link (98 ms)
+frontend-tests-1  |
+frontend-tests-1  |   ● renders learn react link
+frontend-tests-1  |
+frontend-tests-1  |     TestingLibraryElementError: Unable to find an element with the text: /learn react/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+frontend-tests-1  |
+frontend-tests-1  |     Ignored nodes: comments, script, style
+frontend-tests-1  |     <body>
+frontend-tests-1  |       <div>
+frontend-tests-1  |         <div
+frontend-tests-1  |           class="App"
+frontend-tests-1  |         >
+frontend-tests-1  |           <header
+frontend-tests-1  |             class="App-header"
+frontend-tests-1  |           >
+frontend-tests-1  |             <img
+frontend-tests-1  |               alt="logo"
+frontend-tests-1  |               class="App-logo"
+frontend-tests-1  |               src="logo.svg"
+frontend-tests-1  |             />
+frontend-tests-1  |             <p>
+frontend-tests-1  |               Edit
+frontend-tests-1  |               <code>
+frontend-tests-1  |                 src/App.js
+frontend-tests-1  |               </code>
+frontend-tests-1  |                and save to reload.
+frontend-tests-1  |             </p>
+frontend-tests-1  |             <a
+frontend-tests-1  |               class="App-link"
+frontend-tests-1  |               href="https://reactjs.org"
+frontend-tests-1  |               rel="noopener noreferrer"
+frontend-tests-1  |               target="_blank"
+frontend-tests-1  |             >
+frontend-tests-1  |               love shane ok ok
+frontend-tests-1  |             </a>
+frontend-tests-1  |           </header>
+frontend-tests-1  |         </div>
+frontend-tests-1  |       </div>
+frontend-tests-1  |     </body>
+frontend-tests-1  |
+frontend-tests-1  |       4 | test('renders learn react link', () => {
+frontend-tests-1  |       5 |   render(<App />);
+frontend-tests-1  |     > 6 |   const linkElement = screen.getByText(/learn react/i);
+frontend-tests-1  |         |                              ^
+frontend-tests-1  |       7 |   expect(linkElement).toBeInTheDocument();
+frontend-tests-1  |       8 | });
+frontend-tests-1  |       9 |
+frontend-tests-1  |
+frontend-tests-1  |       at Object.getElementError (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:37:19)
+frontend-tests-1  |       at node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+frontend-tests-1  |       at node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+frontend-tests-1  |       at getByText (node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/query-helpers.js:95:19)
+frontend-tests-1  |       at Object.<anonymous> (src/App.test.js:6:30)
+frontend-tests-1  |       at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+frontend-tests-1  |       at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+frontend-tests-1  |
+frontend-tests-1  | Test Suites: 1 failed, 1 total
+frontend-tests-1  | Tests:       1 failed, 1 total
+frontend-tests-1  | Snapshots:   0 total
+frontend-tests-1  | Time:        8.304 s
+frontend-tests-1  | Ran all test suites.
+frontend-tests-1  |
+frontend-web-1    | (node:25) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+frontend-web-1    | (Use `node --trace-deprecation ...` to show where the warning was created)
+frontend-web-1    | (node:25) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+frontend-web-1    | Starting the development server...
+frontend-web-1    |
+frontend-web-1    | Compiled successfully!
+frontend-web-1    |
+frontend-web-1    | You can now view frontend in the browser.
+frontend-web-1    |
+frontend-web-1    |   Local:            http://localhost:3000
+frontend-web-1    |   On Your Network:  http://172.18.0.3:3000
+frontend-web-1    |
+frontend-web-1    | Note that the development build is not optimized.
+frontend-web-1    | To create a production build, use npm run build.
+frontend-web-1    |
+frontend-web-1    | webpack compiled successfully
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+nginx > popular web server just allowing traffic incoming & respons with static files
+
+
+FROM node:alpine //as builder or 0 
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx
+COPY --from=0 /app/build /usr/share/nginx/html //nginx autmaticall start no command require
 
 
