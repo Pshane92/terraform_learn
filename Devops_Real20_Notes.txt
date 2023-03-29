@@ -1,0 +1,110 @@
+DevOps Models
+
+Waterfall
+Agile
+Spiral
+Big bootstrapping
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+
+Waterfall : Every moel shouldd finish before go next Models
+
+1. Req 2. Design 3. Imple. 4. Test. 5. Maint.
+
+Agile : smaller lists & interations. Review every week
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+devops life cycle
+
+code : developer commit code
+
+code build : deployable artifacte
+
+code test : unit & interation Test
+
+code analysis : vulnerabilties, best Practices
+
+delivery : deploy coe to staging
+
+db/sec changes : every other Ops changes
+
+software testing : QA/Functional, Load, performance tests
+
+deploy to prod :
+
+go live : user traffic routed to new changes
+
+keep monitoring
+
+user feedback
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+CI 
+
+Code writing : IDE
+
+    Eclipse
+    Visual solutions
+    Ato,
+    Pycharm
+    etc.,
+
+Version Control
+
+    GIT
+    SVN 
+    TFS
+    PERFORCE 
+    BITBUCKET
+    etc.,
+
+Build tools
+
+    Maven, Ant, Gradle
+    MSBuil, Visual Build
+    IBM Urban Code
+    Make
+    Grunt
+
+Software repo
+
+    Sonartype Nexus
+    Jfrog Artifactory
+    Archiva
+    Cloudsmith PACKAGE
+    Grunt
+
+CI tools
+
+    Jenkins
+    Circle CI
+    Teamcity
+    Bamboo CI
+    Travis CI
+    Cruise controls
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+CD 
+
+CD Tools:
+
+    Ansible, Puppet, chef
+    Terrafrm, CLOUDFORMATION
+    Jenkins, Octopus deploy
+    Helm Charts
+    Code deploy
+
+   
+
+
+
+
+
+
+
+
+

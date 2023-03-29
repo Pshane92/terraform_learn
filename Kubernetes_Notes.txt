@@ -1,0 +1,42 @@
+
+Whats is kubernetes > system for running many diff containers over multiple different machines
+
+why k8 > when you need to run many diff containers with diff. images
+
+
+                    request
+                       |
+                  Load Balancer
+            |          |            |
+            nodes    nodes        nodes
+            |           |           |
+            container
+            container               container
+            container  container     container
+             |          |               |
+             >>>>>>>>>>master>>>>>>>>>>>>    //nodes+master=cluster
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+K8 development > minikube
+
+k8 production  > Amazon elastic container services for k8 (EKS)
+                 google cloud kubernetes engine (GKE)
+
+used for managing containers
+in the node                   >  kubectl------------------->VM node>>containers, containers
+
+
+Used for managing the VM Itself>  minikube---------------->VM node>>containers, containers
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+minikube // only require in development not in prod
+
+kubectl //require in both prod & development
+
+
+
+
+

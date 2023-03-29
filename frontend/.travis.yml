@@ -9,3 +9,17 @@ before_install:
 
 script:
   - docker run -e CI=true stephengrider/docker-react npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'docker' //name you set on Beanstalk
+  env: 'docker-env' //name you set on Beanstalk
+  bucket_name: 'elasticbeanstalk-us-east-1-923445559289' // from AWS S3
+  bucket_path: 'docker' // create folder like inside
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY  //you have to set this in Travis Key section for S3 Key pair 
+  secret_access_key: $AWS_SECRET_KEY //ownloaded from AWS
+
+

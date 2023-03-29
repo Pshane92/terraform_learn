@@ -1182,6 +1182,58 @@ Travis CI web has loggd in with github
 
 .travis.yml // has created inside the fronten project file
 
+FROM node:alpine   //as builder or 0
+WORKDIR '/app'
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+FROM nginx
+EXPOSE 80    //port 80 for outsie
+COPY --from=0 /app/build /usr/share/nginx/html   
+
+
+
+YAML
+
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t stephengrider/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true stephengrider/docker-react npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: 'us-east-1'
+  app: 'docker' //name you set on Beanstalk
+  env: 'docker-env' //name you set on Beanstalk
+  bucket_name: 'elasticbeanstalk-us-east-1-923445559289' // from AWS S3
+  bucket_path: 'docker' // create folder like inside
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY  //you have to set this in Travis Key section for S3 Key pair 
+  secret_access_key: $AWS_SECRET_KEY //ownloaded from AWS
+
+
+Create Beanstalk in AWS and Travis Talks to AWS Beanstalk to buil thee app
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//multiple container
+
+
+web-----Nginx------React                       ||-----Worker
+          |-------- |---Express server-------Redis
+                                   |---------Postgres
+
 
 
 

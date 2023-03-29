@@ -1,0 +1,137 @@
+
+
+AWS Security Practices:
+
+General:
+
+Protect root account //delete access keys for root user
+        //replace them with IAM Uset & least privileges
+        // if needs, rotate often
+
+Protect your cloud trail & Billing s3 acounts
+
+Activate region based cloudtrail
+
+Admin with least privileges
+
+Understand AWS STS & roles
+
+Understand billing & monitoring
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+EC2/VPC/EBS:
+
+use encrypted volumes
+
+Activate VPC Flow logs
+
+Protect EC2 Key Pairs  // password protect .pem file on user machine to ssh
+ //don't coomit keys to code repo
+ //don't save them in a DB
+
+Leverage IAM Roles for EC2
+
+Control traffice EC2 with clear security Groups
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+S3 :
+
+Don't create any public access to s3 bucket  // but needs public access give via cloudfront
+
+Encrpt sensitive data in S3 usin SSE 
+
+//Encrypt data at rest 
+    require kms keys:
+        s3 bucks, RDS/Aurora DB, EC2 EBS
+// Ecrypt data in transit
+    use HTTPS everywhere:
+        https in s3
+        cloudfront /aws certificate manaer
+    DB:
+        require ssl/tls conn. 
+
+
+Encrypt inbound and outbound S3 data traffice
+
+Understand S3 ver & Lifecycle polices
+
+Activate S3 Acess Logging & analyse logs
+
+Audit
+    Trsue advisor for resorces & billing
+    AWS config for custom template to audit the desire state
+
+++++++++++++++++++++++++++++++++++++++++======
+
+Custom AMI 
+
+    All Software up to date with relvent security Patches
+
+    Disable apps that authenticate insecurely
+
+    Disable non-essential services on startup //only SSH, RDP and other essential apps service starts
+
+    Disable if any default user account & password of any apps
+
+    Block SMTP Relays & proxy servers
+
+    securely delete all AWS Credentials from disk & config file
+        $ find /root /home/*/ -name .aws -exec rm -f {} \;
+
+    Delete any third party creentials from disk & config file
+        $ find /root /home/*/ -name .cvspass -exec rm -f {} \;
+        $ find /root/.subversion/auth/svn.simple  /home/*/.subversion/auth/svn.simple  -exec rm -f {} \;
+    
+    Delete certificates & others keys which not require
+
+    confiure only public key authenticate not password
+        # /etc/ssh/sshd_config
+        Pubkeyauthentications yes
+        passwordauthentication no
+    Generate unique ssh host key on instance
+
+    remove all user ssh public & private key Pairs
+
+    remove ssh authorise keys before creating AMI
+        $ find / -name "authorize_keys" -exec rm -f {} \;
+
+    remove & disable passwor for all user accounts
+        $ passwd -l <username>
+
+    delete all shell hishory & system log file contains sensitive data
+        $ find /root/.*history /home/*/.history-exec rm -f [] \;
+
+    bootstrapping:
+        patch security Software
+        update apps
+        apply contextual data
+        register
+         s/w: puppet, chef, capistrano, cloud-init, cfn-init, bash/powershell
+ 
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+shared security controls
+
+    Acitive directory or LDAP with AWS Conginto to federate username
+
+    Logging solutions  new relic dataog.
+
+    aws tag for various sources
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+         
+
+
+
+
+
+
+  
+
+
